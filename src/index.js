@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import axios from "axios";
 import css from './style.css';
 
 const testData = [
@@ -30,11 +31,14 @@ class Card extends React.Component {
 }
 
 class Form extends React.Component {
+  
 	state = { userName: '' };
-	handleSubmit = async (event) => {
+	handleSubmit = (event) => {
   	event.preventDefault();
-    const resp = await axios.get(`https://api.github.com/users/${this.state.userName}`);
-    this.props.onSubmit(resp.data);
+    axios.get(`https://api.github.com/users/${this.state.userName}`)
+    .then(resp => {
+      this.props.onSubmit(resp.data);
+    });
   };
 	render() {
   	return (
@@ -67,7 +71,7 @@ class App extends React.Component {
   	return (
     	<div>
     	  <div className="header">{this.props.title}</div>
-        {/* <Form onSubmit={this.addNewProfile}/> */}
+        <Form onSubmit={this.addNewProfile}/>
         <CardList profiles={this.state.profiles} />
     	</div>
     );
