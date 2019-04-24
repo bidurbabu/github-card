@@ -1,84 +1,98 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import axios from "axios";
-import css from './style.css';
+import css from "./style.css";
 
 const testData = [
-    {name: "Dan Abramov", avatar_url: "https://avatars0.githubusercontent.com/u/810438?v=4", company: "@facebook"},
-    {name: "Sophie Alpert", avatar_url: "https://avatars2.githubusercontent.com/u/6820?v=4", company: "Humu"},
-    {name: "Sebastian Markbåge", avatar_url: "https://avatars2.githubusercontent.com/u/63648?v=4", company: "Facebook"},
+  {
+    name: "Dan Abramov",
+    avatar_url: "https://avatars0.githubusercontent.com/u/810438?v=4",
+    company: "@facebook"
+  },
+  {
+    name: "Sophie Alpert",
+    avatar_url: "https://avatars2.githubusercontent.com/u/6820?v=4",
+    company: "Humu"
+  },
+  {
+    name: "Sebastian Markbåge",
+    avatar_url: "https://avatars2.githubusercontent.com/u/63648?v=4",
+    company: "Facebook"
+  }
 ];
 
-const CardList = (props) => (
-	<div>
-  	{props.profiles.map(profile => <Card {...profile}/>)}
-	</div>
+const CardList = props => (
+  <div>
+    {props.profiles.map(profile => (
+      <Card {...profile} />
+    ))}
+  </div>
 );
 
 class Card extends React.Component {
-	render() {
-  	const profile = this.props;
-  	return (
-    	<div className="github-profile">
-    	  <img src={profile.avatar_url} />
+  render() {
+    const profile = this.props;
+    return (
+      <div className="github-profile">
+        <img src={profile.avatar_url} />
         <div className="info">
           <div className="name">{profile.name}</div>
           <div className="company">{profile.company}</div>
         </div>
-    	</div>
+      </div>
     );
   }
 }
 
 class Form extends React.Component {
-  
-	state = { userName: '' };
-	handleSubmit = (event) => {
-  	event.preventDefault();
-    axios.get(`https://api.github.com/users/${this.state.userName}`)
-    .then(resp => {
-      this.props.onSubmit(resp.data);
-    });
+  state = { userName: "" };
+  handleSubmit = event => {
+    event.preventDefault();
+    axios
+      .get(`https://api.github.com/users/${this.state.userName}`)
+      .then(resp => {
+        this.props.onSubmit(resp.data);
+      });
   };
-	render() {
-  	return (
-    	<form onSubmit={this.handleSubmit}>
-    	  <input 
-          type="text" 
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <input
+          type="text"
           value={this.state.userName}
           onChange={event => this.setState({ userName: event.target.value })}
-          placeholder="GitHub username" 
-          required 
+          placeholder="GitHub username"
+          required
         />
         <button>Add card</button>
-    	</form>
+      </form>
     );
   }
 }
 
 class App extends React.Component {
   state = {
-    profiles: testData,
+    profiles: testData
   };
-  addNewProfile = (profileData) => {
-    console.log('App', profileData);
+  addNewProfile = profileData => {
+    console.log("App", profileData);
     const { name, avatar_url, company } = profileData;
     this.setState(prevState => ({
-      profiles: [...prevState.profiles, {name, avatar_url, company}]
-    }))
-  }
-	render() {
-  	return (
-    	<div>
-    	  <div className="header">{this.props.title}</div>
-        <Form onSubmit={this.addNewProfile}/>
+      profiles: [...prevState.profiles, { name, avatar_url, company }]
+    }));
+  };
+  render() {
+    return (
+      <div>
+        <div className="header">{this.props.title}</div>
+        <Form onSubmit={this.addNewProfile} />
         <CardList profiles={this.state.profiles} />
-    	</div>
+      </div>
     );
-  }	
+  }
 }
 
 ReactDOM.render(
-	<App title="The GitHub Cards App" />,
-  document.getElementById('mountNode'),
+  <App title="The GitHub Cards App" />,
+  document.getElementById("mountNode")
 );
